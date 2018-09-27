@@ -1,17 +1,19 @@
 \documentclass{article}
 
+\usepackage{amsmath}
 \usepackage{xcolor,listings}
 
 \title{Group Project 2\\Problem 1}
 \author{Group 26\\JJ (John) Brown, David Jones,\\Charlie (Charles) Ruiter, Stephanie Whitworth}
 \date{Due 2018-10-01}
 
-\renewcommand{\thesubsection}{\Alph{subsection}}
+\renewcommand{\thesubsection}{\alph{subsection}}
+\renewcommand{\thesection}{Problem {section}}
 
 \begin{document}
 \maketitle
 
-\section{Problem 1}
+\section{}
 \subsection{Write a description for the attached ER diagram}
 
 \begin{itemize}
@@ -32,8 +34,14 @@
 
 \subsection{Convert the attached ER diagram to a Relational Database}
 
-\subsubsection{Passenger}
-\begin{lstlisting}[language=SQL]
+\begin{lstlisting}[
+	language=SQL,
+	morekeywords={REFERENCES},
+	breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}, % https://tex.stackexchange.com/questions/116534/lstlisting-line-wrapping
+    keywordstyle=\color{blue},
+    stringstyle=\color{green},
+	]
 CREATE TABLE Passenger(
 	Passenger_id NUMERIC,
 	First_Name VARCHAR,
@@ -45,12 +53,67 @@ CREATE TABLE Passenger_Email_Address(
 	Email_Address VARCHAR
 );
 CREATE TABLE Employee(
-	SSN NUMERIC,
+	Employee_SSN NUMERIC,
 	First_Name VARCHAR,
 	Last_Name VARCHAR,
 	Hire_Date DATE,
-	Service_Years NUMERIC AS DATE_FORMAT(DATEDIFF(NOW(), Hire_Date), "%Y")+0,
-	PRIMARY KEY(SSN)
+	Service_Years NUMERIC AS DATE_FORMAT( DATEDIFF( NOW(), Hire_Date), "%Y")+0,
+	FOREIGN KEY (Trainer_SSN) REFERENCES Employee(Employee_SSN),
+	PRIMARY KEY (Employee_SSN)
+);
+
+CREATE TABLE Driver(
+	FOREIGN KEY (Employee_SSN) REFERENCES Employee(Employee_SSN),
+	Licence_id NUMERIC,
+	Licence_Class VARCHAR,
+	Licence_Expiration DATE,
+	PRIMARY KEY (Employee_SSN)
+);
+
+CREATE TABLE Mechanic(
+	FOREIGN KEY (Employee_SSN) REFERENCES Employee(Employee_SSN),
+	Certification_Type VARCHAR,
+	Certification_Date DATE,
+	PRIMARY KEY (Employee_SSN)
+);
+
+CREATE TABLE Taxi(
+	Taxi_id NUMERIC,
+	Make VARCHAR,
+	Model VARCHAR,
+	Year NUMERIC,
+	FOREIGN KEY (Parking_Complex_Name, Parking_Spot_Number, Parking_Spot_Level) REFERENCES Parking_Spot(Parking_Complex_Name, Parking_Spot_Number, Parking_Spot_Level),
+	PRIMARY KEY (Taxi_id)
+);
+
+CREATE TABLE Services(
+	FOREIGN KEY (Taxi_id) REFERENCES Taxi(Taxi_id),
+	FOREIGN KEY (Mechanic_SSN) REFERENCES Mechanic(Employee_SSN),
+	Date DATE,
+	FOREIGN_KEY (Accepting_Driver_SSN) REFERENCES Driver(Employee_SSN)
+);
+
+CREATE TABLE Ride(
+	FOREIGN KEY (Passenger_id) REFERENCES Passenger(Passenger_id),
+	FOREIGN KEY (Taxi_id) REFERENCES Taxi(Taxi_id),
+	FOREIGN KEY (Driver_SSN) REFERENCES Driver(Employee_SSN)
+);
+
+CREATE TABLE Parking_Spot(
+	FOREIGN KEY (Parking_Complex_Name) REFERENCES Parking_Complex(Parking_Complex_Name),
+	Spot_Number NUMERIC,
+	Level NUMERIC
+	PRIMARY KEY (Parking_Complex_Name, Spot_Number, Level)
+);
+
+CREATE TABLE Parking_Complex(
+	Parking_Complex_Name VARCHAR,
+	Location_Number VARCHAR,
+	Location_Street VARCHAR,
+	Location_City VARCHAR,
+	Location_State VARCHAR,
+	Location_ZIP VARCHAR,
+	PRIMARY KEY (Parking_Complex_Name)
 );
 \end{lstlisting}
 

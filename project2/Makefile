@@ -4,4 +4,4 @@ all: $(PROBLEM_1_TEX)
 	xelatex "$<"
 
 clean:
-	rm *.aux *.log *.pdf
+	rm *.aux *.log *.pdf *.synctex*
