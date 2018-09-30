@@ -1,0 +1,8 @@
+INSERT INTO Student VALUES ('stefan', 'Stefan Keller', 'University of Oklahoma', 2020)
+INSERT INTO Student VALUES ('cfox', 'Colin Fox', 'Oklahoma State University', 2021)
+INSERT INTO Student VALUES ('moerman', 'Fientje Moerman', 'Oklahoma State University', 2019)
+INSERT INTO Student VALUES ('grice', 'George Rice', 'Texas A&M University', 2019)
+INSERT INTO Student VALUES ('1udaya1', 'Udaya Chandrika', 'Baylor University', 2018)
+INSERT INTO Student VALUES ('mightybruce', 'Bruce Yamashita', 'Texas A&M University', 2018)
+INSERT INTO Student VALUES ('_ash_', 'Ashley Brzozowicz', 'University of Oklahoma', 2020)
+INSERT INTO Student VALUES ('jose1980', 'Jose Monteiro', 'Texas Christian University', 2018)
