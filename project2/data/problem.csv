@@ -1,11 +1,11 @@
-pid,pname,Max_score,aid
-10,Exceeding the Speed Limit,10,101
-11,Array Triplets,20,102
-12,a,bSpecial Points,30,104
-13,Cube-loving Numbers,50,103
-14,Interesting Trip,15,104
-15,Sword Profit,20,103
-16,Which Section?,40,103
-17,Minute to Win It,10,103
-18,Watson's Love for Arrays,30,102
-19,Dynamic Trees,50,102
+pid;pname;Max_score;aid
+10;Exceeding the Speed Limit;10;101
+11;Array Triplets;20;102
+12;a,b Special Points;30;104
+13;Cube-loving Numbers;50;103
+14;Interesting Trip;15;104
+15;Sword Profit;20;103
+16;Which Section?;40;103
+17;Minute to Win It;10;103
+18;Watson's Love for Arrays;30;102
+19;Dynamic Trees;50;102
