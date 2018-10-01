@@ -18,3 +18,18 @@ FROM Contest_Problems, Problem
 WHERE Contest_Problems.pid = Problem.pid;
 
 /* Problem 2.4 */
+SELECT Student.login, sum(Scored.score)
+FROM Student, Scored
+WHERE Student.login = Scored.login
+
+/* Problem 2.5 */
+SELECT max(max_score)
+FROM Problem
+WHERE aid = 'Rachel Moran'
+
+/* Problem 2.6 */
+SELECT P.pname
+FROM Problem as P
+WHERE (SELECT count(S.score) FROM scored as S WHERE S.pid = P.pid) > 2
+
+/* Problem 2.7 */
