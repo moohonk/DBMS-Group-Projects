@@ -7,8 +7,8 @@ CREATE TABLE Trainer(
 
 CREATE TABLE Gym(
 	city_name VARCHAR(24),
-	type_specialization VARCHAR(12),
-	badge_name VARCHAR(12),
+	type_specialization VARCHAR(24),
+	badge_name VARCHAR(24),
     gym_leader_id int,
 	-- Gym leader information,
 	-- merged into gym info because of total,
@@ -19,6 +19,7 @@ CREATE TABLE Gym(
 )
 
 CREATE TABLE PokemonSpecies(
+	species_number INT,
 	species_number INT,
 	name VARCHAR(24),
 	type_1 VARCHAR(12),
