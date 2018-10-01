@@ -1,3 +1,47 @@
+/* DDL */
+CREATE TABLE Participated(
+    login varchar(50),
+    cname varchar(50),
+    PRIMARY KEY (login, cname),
+    FOREIGN KEY (login) REFERENCES Student(login),
+    FOREIGN KEY (cname) REFERENCES Contest(cname)
+);
+
+CREATE TABLE Author(
+    aid int,
+    aname varchar(50),
+    compensation int,
+    PRIMARY KEY (aid)
+);
+
+CREATE TABLE Problem(
+    pid int,
+    pname varchar(50),
+    max_score int,
+    aid int,
+    FOREIGN KEY (aid) REFERENCES Author(aid),
+    PRIMARY KEY (pid)
+);
+
+CREATE TABLE Scored(
+    pid int,
+    login varchar(50),
+    score REAL,
+    FOREIGN KEY (pid) REFERENCES Problem(pid),
+    FOREIGN KEY (login) REFERENCES Student(login),
+    PRIMARY KEY (pid, login)
+);
+
+CREATE TABLE Contest_Problems(
+    cname varchar(50),
+    pid int,
+    FOREIGN KEY (cname) REFERENCES Contest(cname),
+    FOREIGN KEY (pid) REFERENCES Problem(pid),
+    PRIMARY KEY (cname, pid)
+);
+
+
+/* Insertions */
 INSERT INTO Author VALUES (101, 'Alexander Sforza', 2000)
 INSERT INTO Author VALUES (102, 'Rachel Moran', 1500)
 INSERT INTO Author VALUES (103, 'David Terans', 2000)
@@ -68,3 +112,104 @@ INSERT INTO Student VALUES ('1udaya1', 'Udaya Chandrika', 'Baylor University', 2
 INSERT INTO Student VALUES ('mightybruce', 'Bruce Yamashita', 'Texas A&M University', 2018)
 INSERT INTO Student VALUES ('_ash_', 'Ashley Brzozowicz', 'University of Oklahoma', 2020)
 INSERT INTO Student VALUES ('jose1980', 'Jose Monteiro', 'Texas Christian University', 2018)
+
+
+/* Problem 2 Questions */
+/* Problem 2.1 */
+SELECT * FROM Student;
+SELECT * FROM Contest;
+SELECT * FROM Participated;
+SELECT * FROM Author;
+SELECT * FROM Problem;
+SELECT * FROM Scored;
+SELECT * FROM Contest_Problems
+
+/* Problem 2.2 */
+SELECT sname, grad_year
+FROM Student
+WHERE university='University of Oklahoma';
+
+/* Problem 2.3 */
+SELECT Contest_Problems.cname, Problem.pname
+FROM Contest_Problems, Problem
+WHERE Contest_Problems.pid = Problem.pid;
+
+/* Problem 2.4 */
+SELECT Scored.login, SUM(Scored.score) AS sum
+FROM Scored
+GROUP BY Scored.login;
+
+/* Problem 2.5 */
+SELECT pname
+FROM Problem
+WHERE max_score=(SELECT MAX(max_score) FROM Problem) 
+AND 
+Problem.aid=(SELECT Author.aid FROM Author WHERE Author.aname='Rachel Moran') 
+
+/* Problem 2.6 */
+SELECT pname, total FROM Problem
+LEFT JOIN
+(
+    SELECT COUNT(login) AS total, pid
+    FROM Scored
+    GROUP BY pid
+) AS Totals
+ON Problem.pid = Totals.pid
+WHERE Totals.total > 2;
+
+/* Problem 2.7 */
+SELECT cname, SUM(compensation)
+FROM Contest_Problems 
+LEFT JOIN Problem ON Contest_Problems.pid = Problem.pid
+LEFT JOIN Author ON Problem.aid = Author.aid
+GROUP BY cname
+
+/* Problem 2.8  */
+SELECT cname, MAX(total)
+FROM (
+    SELECT cname, login, SUM(score) AS total
+	FROM Scored LEFT JOIN Contest_Problems ON Scored.pid = Contest_Problems.pid
+	GROUP BY cname, login
+) AS S
+GROUP BY S.cname
+
+/* Problem 2.9 */
+UPDATE Author SET compensation=1.1*compensation WHERE Author.aid IN 
+(
+    SELECT Problem.aid
+    FROM Problem
+    WHERE Problem.pid IN
+    (
+        SELECT Num.pid FROM
+            (
+            SELECT Scored.pid, COUNT(*) AS count
+            FROM Scored LEFT JOIN Problem ON Scored.pid = Problem.pid
+            WHERE score >= 0.5 * max_score AND score <= 0.75 * max_score
+            GROUP BY Scored.pid) AS NumInRange 
+            LEFT JOIN 
+            (
+            SELECT Scored.pid, COUNT(*) AS count
+            FROM Scored LEFT JOIN Problem ON Scored.pid = Problem.pid
+            GROUP BY Scored.pid) AS Num ON Num.pid = NumInRange.pid
+            WHERE Num.count = NumInRange.count
+        )
+    )
+
+/* Problem 2.10 */
+DELETE FROM Participated WHERE login IN
+(
+    SELECT login
+    FROM Student
+    WHERE grad_year=2018
+);
+
+DELETE FROM Scored WHERE login IN
+(
+    SELECT login
+    FROM Student
+    WHERE grad_year=2018
+)
+
+DELETE 
+FROM Student
+WHERE grad_year=2018
