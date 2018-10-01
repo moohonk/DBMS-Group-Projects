@@ -56,7 +56,43 @@ FROM (
 ) AS S
 GROUP BY S.cname
 
+/* Problem 2.9 */
+UPDATE Author SET compensation=1.1*compensation WHERE Author.aid IN 
+(
+    SELECT Problem.aid
+    FROM Problem
+    WHERE Problem.pid IN
+    (
+        SELECT Num.pid FROM
+            (
+            SELECT Scored.pid, COUNT(*) AS count
+            FROM Scored LEFT JOIN Problem ON Scored.pid = Problem.pid
+            WHERE score >= 0.5 * max_score AND score <= 0.75 * max_score
+            GROUP BY Scored.pid) AS NumInRange 
+            LEFT JOIN 
+            (
+            SELECT Scored.pid, COUNT(*) AS count
+            FROM Scored LEFT JOIN Problem ON Scored.pid = Problem.pid
+            GROUP BY Scored.pid) AS Num ON Num.pid = NumInRange.pid
+            WHERE Num.count = NumInRange.count
+        )
+    )
 
 /* Problem 2.10 */
-DELETE FROM Student
-WHERE grad_year=2018;
+DELETE FROM Participated WHERE login IN
+(
+    SELECT login
+    FROM Student
+    WHERE grad_year=2018
+);
+
+DELETE FROM Scored WHERE login IN
+(
+    SELECT login
+    FROM Student
+    WHERE grad_year=2018
+)
+
+DELETE 
+FROM Student
+WHERE grad_year=2018
