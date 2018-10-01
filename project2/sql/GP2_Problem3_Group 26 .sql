@@ -291,3 +291,35 @@ INSERT INTO Pokemon VALUES(800, 'Dugtrio', 42, 82)
 INSERT INTO Pokemon VALUES(800, 'Nidoqueen', 44, 61)
 INSERT INTO Pokemon VALUES(800, 'Nidoking', 45, 92)
 INSERT INTO Pokemon VALUES(800, 'Rhydon', 50, 21)
+
+--Retrieve the names of all gym leaders along with their monologues at their respective gyms
+SELECT first_name, gym_leader_monologue
+FROM Gym LEFT JOIN Trainer ON Trainer.trainer_id = gym_leader_id;
+
+--Retrieve the count of trainers who have completed the Pewter City gym
+SELECT COUNT(*)
+FROM GymBattle
+WHERE city_name='Pewter City'
+
+--Retrieve the average level of each trainer's pokemon team
+SELECT trainer_id, AVG(level)
+FROM Pokemon
+GROUP BY trainer_id;
+
+--Retrieve a list of all trainers who have completed at least one gym, along with their highest level pokemon
+SELECT trainer_id, MAX(level) FROM Pokemon
+WHERE Pokemon.trainer_id IN (SELECT DISTINCT(trainer_id) FROM GymBattle)
+GROUP BY trainer_id;
+
+--A new gym has opened in Pewter City. It specializes in bug type pokemon and will give away the Moth Badge. Botanist Lief will be the gym leader.
+INSERT INTO Gym VALUES(
+	'Pewter City',
+	'Bug',
+	'Moth Badge',
+	3,
+	'My lens is always focused on victory. I won''t let anything ruin this shot!'
+);
+
+--The gym leader of Cinnabar Island has changed to a new trainer in the region. He claims his trainer Id is 9999
+UPDATE Gym
+SET gym_leader_id=9999;
