@@ -1,0 +1,3 @@
+# Ignore the config file in this directory,
+# so that the db password is not saved in the (public) git repo
+config.toml
