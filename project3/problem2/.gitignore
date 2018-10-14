@@ -9,3 +9,4 @@
 .idea/libraries/
 out/
 config.toml
+target/
