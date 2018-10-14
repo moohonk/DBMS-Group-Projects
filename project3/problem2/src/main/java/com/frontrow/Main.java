@@ -66,10 +66,9 @@ public class Main
 
 	private static void enterOptionLoop()
 	{
-		printOptions(mainMenuOptionDescriptions);
-
 		while (true)
 		{
+			printOptions(mainMenuOptionDescriptions);
 			int input = getIntegerInRange(1, 4);
 
 			try

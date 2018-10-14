@@ -11,8 +11,8 @@ import java.util.StringJoiner;
 
 class DbManipulator
 {
-	private static final String SELECT_PROBLEMS = "SELECT* FROM Problems";
-	private static final String SELECT_AUTHORS = "SELECT* FROM Authors";
+	private static final String SELECT_PROBLEMS = "SELECT * FROM Problem";
+	private static final String SELECT_AUTHORS = "SELECT * FROM Author";
 	private String jbdc;
 
 	DbManipulator(final String jbdc)
@@ -43,27 +43,31 @@ class DbManipulator
 
 	void addNewProblem(final PrintStream out) throws SQLException
 	{
-		out.println("Adding new problem"); // todo: implement this
+		out.println("TODO: Adding new problem"); // todo: implement this
 	}
 
 	void giveRaiseToAuthor(final PrintStream out) throws SQLException
 	{
-		out.println("Giving raise to author"); // todo: implement this
+		out.println("TODO: Giving raise to author"); // todo: implement this
 	}
 
 	void displayProblemsAndAuthors(final PrintStream out) throws SQLException
 	{
-		try (Connection connection = getDbConnection();
-				Statement statement = connection.createStatement();
-				ResultSet problems = statement.executeQuery(SELECT_PROBLEMS);
-				ResultSet authors = statement.executeQuery(SELECT_AUTHORS))
+		try (Connection connection = getDbConnection())
 		{
-			out.println("Problems:");
-			printResultSet(out, problems);
+			try (Statement statement = connection.createStatement(); ResultSet problems = statement.executeQuery(SELECT_PROBLEMS))
+			{
+				out.println("Problems:");
+				printResultSet(out, problems);
+				out.println();
+			}
 
-			out.println();
-			out.println("Authors:");
-			printResultSet(out, authors);
+			try (Statement statement = connection.createStatement(); ResultSet authors = statement.executeQuery(SELECT_AUTHORS))
+			{
+				out.println("Authors:");
+				printResultSet(out, authors);
+				out.println();
+			}
 		}
 	}
 
@@ -71,8 +75,8 @@ class DbManipulator
 	{
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		int numCols = metaData.getColumnCount();
-		while (resultSet.next())
-		{
+
+		{ // column names
 			StringJoiner joiner = new StringJoiner(", ");
 			for (int i = 1; i < numCols; i++)
 			{
@@ -80,6 +84,7 @@ class DbManipulator
 			}
 			out.println(joiner.toString());
 		}
+
 		while (resultSet.next())
 		{
 			StringJoiner joiner = new StringJoiner(", ");
