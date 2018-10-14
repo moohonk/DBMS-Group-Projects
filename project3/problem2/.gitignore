@@ -5,5 +5,7 @@
 .idea/project-template.xml
 .idea/workspace.xml
 .idea/compiler.xml
+.idea/uiDesigner.xml
 .idea/libraries/
 out/
+config.toml
