@@ -2,6 +2,7 @@ package com.frontrow;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -71,21 +72,30 @@ public class Main
 		{
 			int input = getIntegerInRange(1, 4);
 
-			switch (input)
+			try
 			{
-				case 1:
-					db.addNewProblem();
-					break;
-				case 2:
-					db.giveRaiseToAuthor();
-					break;
-				case 3:
-					db.displayProblemsAndAuthors();
-					break;
-				case 4:
-					return;
-				default: // just in case
-					System.err.printf("Unknown option selected: %d%nPlease enter an integer value from 1 to 4.%n", input);
+
+				switch (input)
+				{
+					case 1:
+						db.addNewProblem(System.err);
+						break;
+					case 2:
+						db.giveRaiseToAuthor(System.err);
+						break;
+					case 3:
+						db.displayProblemsAndAuthors(System.out);
+						break;
+					case 4:
+						return;
+					default: // just in case
+						System.err.printf("Unknown option selected: %d%nPlease enter an integer value from 1 to 4.%n", input);
+				}
+			}
+			catch (SQLException e)
+			{
+				System.err.println("SQL error encountered:");
+				e.printStackTrace(System.err);
 			}
 		}
 	}

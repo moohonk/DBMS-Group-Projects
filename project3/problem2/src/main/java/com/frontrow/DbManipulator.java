@@ -1,11 +1,18 @@
 package com.frontrow;
 
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.StringJoiner;
 
 class DbManipulator
 {
+	private static final String SELECT_PROBLEMS = "SELECT* FROM Problems";
+	private static final String SELECT_AUTHORS = "SELECT* FROM Authors";
 	private String jbdc;
 
 	DbManipulator(final String jbdc)
@@ -34,18 +41,53 @@ class DbManipulator
 	}
 
 
-	void addNewProblem()
+	void addNewProblem(final PrintStream out) throws SQLException
 	{
-		System.err.println("Adding new problem"); // todo: implement this
+		out.println("Adding new problem"); // todo: implement this
 	}
 
-	void giveRaiseToAuthor()
+	void giveRaiseToAuthor(final PrintStream out) throws SQLException
 	{
-		System.err.println("Giving raise to author"); // todo: implement this
+		out.println("Giving raise to author"); // todo: implement this
 	}
 
-	void displayProblemsAndAuthors()
+	void displayProblemsAndAuthors(final PrintStream out) throws SQLException
 	{
-		System.err.println("Printing out problems and authors"); // todo: implement this
+		try (Connection connection = getDbConnection();
+				Statement statement = connection.createStatement();
+				ResultSet problems = statement.executeQuery(SELECT_PROBLEMS);
+				ResultSet authors = statement.executeQuery(SELECT_AUTHORS))
+		{
+			out.println("Problems:");
+			printResultSet(out, problems);
+
+			out.println();
+			out.println("Authors:");
+			printResultSet(out, authors);
+		}
+	}
+
+	private void printResultSet(final PrintStream out, final ResultSet resultSet) throws SQLException
+	{
+		ResultSetMetaData metaData = resultSet.getMetaData();
+		int numCols = metaData.getColumnCount();
+		while (resultSet.next())
+		{
+			StringJoiner joiner = new StringJoiner(", ");
+			for (int i = 1; i < numCols; i++)
+			{
+				joiner.add(metaData.getColumnName(i));
+			}
+			out.println(joiner.toString());
+		}
+		while (resultSet.next())
+		{
+			StringJoiner joiner = new StringJoiner(", ");
+			for (int i = 1; i < numCols; i++)
+			{
+				joiner.add(resultSet.getString(i));
+			}
+			out.println(joiner.toString());
+		}
 	}
 }
