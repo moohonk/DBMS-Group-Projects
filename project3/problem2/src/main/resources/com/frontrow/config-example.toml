@@ -1,0 +1,7 @@
+# To configure this project, just edit the fields below
+# and save as "config.toml" in this folder
+[database]
+hostname = "YOUR-AZURE-DB.database.windows.net"
+db = "DB_NAME"
+user = "USERNAME"
+password = "PASSWORD"
