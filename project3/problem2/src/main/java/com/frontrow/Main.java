@@ -1,5 +1,7 @@
 package com.frontrow;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -43,22 +45,22 @@ public class Main
 
 		if (db == null)
 		{
-			System.out.println("Please provide a JBDC string to connect to a Transact-SQL database: ");
-			String jbdc = new Scanner(System.in).nextLine();
-			db = new DbManipulator(jbdc);
+			try
+			{
+				System.out.println("Loading JDBC string from config.toml resource...");
+
+				File configFile = new File(Main.class.getResource("config.toml").toURI());
+				AuthLoader azureAuthLoader = new TomlFileAzureAuthLoader(configFile);
+
+				String jbdc = azureAuthLoader.getJbdc();
+
+				db = new DbManipulator(jbdc);
+			}
+			catch (URISyntaxException e)
+			{
+				throw new RuntimeException("Could not load the config.toml resource in the package " + Main.class.getPackage(), e);
+			}
 		}
-	}
-
-	private static void printHelp()
-	{
-		System.err.println("Manipulates a database of competition problems and their authors.");
-		System.err.println("Usage:");
-
-		System.err.println("java " + Main.class.getName() + " [<jbdc>]");
-		System.err.println("\tConnects to a Transact-SQL database of problem and author data");
-		System.err.println("\tusing the given JBDC and prompts the user to view/manipulate");
-		System.err.println("\tproblem/author data.");
-		System.err.println("\tIf not specified, the user is prompted on program start.");
 	}
 
 	private static void enterOptionLoop()
@@ -86,6 +88,17 @@ public class Main
 					System.err.printf("Unknown option selected: %d%nPlease enter an integer value from 1 to 4.%n", input);
 			}
 		}
+	}
+
+	private static void printHelp()
+	{
+		System.err.println("Manipulates a database of competition problems and their authors.");
+		System.err.println("Usage: java " + Main.class.getName() + " [<jbdc>]");
+		System.err.println("\tConnects to a Transact-SQL database of problem and author data");
+		System.err.println("\tusing the given JBDC and prompts the user to view/manipulate");
+		System.err.println("\tproblem/author data.");
+		System.err.println("\tIf not specified, connection and auth data are loaded");
+		System.err.println("\tfrom the program's config.toml resource in " + Main.class.getPackage());
 	}
 
 	private static int getIntegerInRange(final int min, final int max)
