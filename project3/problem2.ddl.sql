@@ -128,6 +128,23 @@ INSERT INTO Student VALUES ('stefan',      'Stefan Keller',     'University of O
                            ('_ash_',       'Ashley Brzozowicz', 'University of Oklahoma',     2020),
                            ('jose1980',    'Jose Monteiro',     'Texas Christian University', 2018);
 
+GO
+CREATE PROCEDURE option_1
+	@pid INT,
+	@pname varchar(50),
+	@aid INT
+AS
+	BEGIN
+	IF EXISTS( SELECT aid from Problem where aid = @aid), 
+		SELECT ROUND(avg(max_score) * 1.1) INTO @max_score FROM Problems WHERE aid = @aid;
+	ELSE 
+		SELECT ROUND(avg(max_score)) INTO @max_score FROM Problems;
+
+
+	INSERT INTO Problem(pid, pname, max_score, aid) VALUES (@pid, @pname, @max_score, @aid);
+	END
+
+
 /** Problem 1 **/
 
 CREATE INDEX Problem_aid_index
@@ -146,3 +163,4 @@ FROM Contest_Problems
 LEFT JOIN Problem ON Contest_Problems.pid = Problem.pid
 LEFT JOIN Author ON Problem.aid = Author.aid
 GROUP BY cname;
+
