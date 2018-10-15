@@ -127,3 +127,18 @@ INSERT INTO Student VALUES ('stefan',      'Stefan Keller',     'University of O
                            ('mightybruce', 'Bruce Yamashita',   'Texas A&M University',       2018),
                            ('_ash_',       'Ashley Brzozowicz', 'University of Oklahoma',     2020),
                            ('jose1980',    'Jose Monteiro',     'Texas Christian University', 2018);
+GO
+CREATE PROCEDURE option_1
+	@pid INT,
+	@pname varchar(50),
+	@aid INT
+AS
+	BEGIN
+	IF EXISTS( SELECT aid from Problem where aid = @aid), 
+		SELECT ROUND(avg(max_score) * 1.1) INTO @max_score FROM Problems WHERE aid = @aid;
+	ELSE 
+		SELECT ROUND(avg(max_score)) INTO @max_score FROM Problems;
+
+
+	INSERT INTO Problem(pid, pname, max_score, aid) VALUES (@pid, @pname, @max_score, @aid);
+	END
