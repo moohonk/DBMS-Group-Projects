@@ -87,6 +87,8 @@ public class Main
 				switch (input)
 				{
 					case 1:
+						// Get pid, pname, aid from user input
+						
 						db.addNewProblem(System.err);
 						break;
 					case 2:
@@ -122,6 +124,47 @@ public class Main
 		System.err.println("\tfrom the program's config.toml resource in " + Main.class.getPackage());
 	}
 
+	private static void addNewProblem()
+	{
+		Integer pid;
+		Integer aid;
+		String pname;
+		Scanner in = new Scanner(System.in);
+		
+		// Get the pid from the user
+		System.out.printf("Please enter a number for the problem ID");
+		while(true)
+		{
+			try
+			{
+				pid = in.nextInt();
+				break;
+			}
+			catch (InputMismatchException e)
+			{
+				System.err.println("Not a valid number.");
+			}
+		}
+		
+		// Get the pname from the user
+		System.out.printf("Please enter a problem name");
+		pname = in.next();
+		
+		// Get the author id from the user
+		System.out.printf("Please enter the author ID");
+		while(true)
+		{
+			try
+			{
+				aid = in.nextInt();
+				break;
+			}
+			catch (InputMismatchException e)
+			{
+				System.err.println("Not a valid number.");
+			}
+		}
+	}
 	private static int getIntegerInRange(final int min, final int max)
 	{
 		Scanner in = new Scanner(System.in);
