@@ -88,8 +88,8 @@ public class Main
 				{
 					case 1:
 						// Get pid, pname, aid from user input
+						addNewProblem();
 						
-						db.addNewProblem(System.err);
 						break;
 					case 2:
 						db.giveRaiseToAuthor(System.err);
@@ -164,6 +164,7 @@ public class Main
 				System.err.println("Not a valid number.");
 			}
 		}
+		db.addNewProblem(pid, aid, pname);
 	}
 	private static int getIntegerInRange(final int min, final int max)
 	{
