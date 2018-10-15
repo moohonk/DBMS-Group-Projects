@@ -41,9 +41,12 @@ class DbManipulator
 	}
 
 
-	void addNewProblem(final PrintStream out) throws SQLException
+	void addNewProblem(int pid, String pname, int aid, final PrintStream out) throws SQLException
 	{
-		out.println("TODO: Adding new problem"); // todo: implement this
+		try {
+			Statement statement = connection.createStatement(); 
+			ResultSet problems = statement.executeQuery(String.format("EXEC option_1 @pid = %d, @pname = %s, @aid = %d", pid, pname, aid));
+		}
 	}
 
 	void giveRaiseToAuthor(final PrintStream out) throws SQLException
