@@ -164,7 +164,7 @@ public class Main
 				System.err.println("Not a valid number.");
 			}
 		}
-		db.addNewProblem(pid, aid, pname);
+		db.addNewProblem(pid, aid, pname, System.err);
 	}
 	private static int getIntegerInRange(final int min, final int max)
 	{
