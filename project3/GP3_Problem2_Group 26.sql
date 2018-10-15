@@ -128,22 +128,6 @@ INSERT INTO Student VALUES ('stefan',      'Stefan Keller',     'University of O
                            ('_ash_',       'Ashley Brzozowicz', 'University of Oklahoma',     2020),
                            ('jose1980',    'Jose Monteiro',     'Texas Christian University', 2018);
 
-GO
-CREATE PROCEDURE option_1
-	@pid INT,
-	@pname varchar(50),
-	@aid INT
-AS
-	BEGIN
-	IF EXISTS( SELECT aid from Problem where aid = @aid), 
-		SELECT ROUND(avg(max_score) * 1.1) INTO @max_score FROM Problems WHERE aid = @aid;
-	ELSE 
-		SELECT ROUND(avg(max_score)) INTO @max_score FROM Problems;
-
-
-	INSERT INTO Problem(pid, pname, max_score, aid) VALUES (@pid, @pname, @max_score, @aid);
-	END
-
 
 /** Problem 1 **/
 
@@ -164,3 +148,52 @@ LEFT JOIN Problem ON Contest_Problems.pid = Problem.pid
 LEFT JOIN Author ON Problem.aid = Author.aid
 GROUP BY cname;
 
+
+/** Problem 2: Stored Procedures **/
+
+/* Option 1 */
+CREATE PROCEDURE option_1
+    @pid INT,
+    @pname varchar(50),
+    @aid INT
+AS
+    BEGIN
+    IF EXISTS( SELECT aid from Problem where aid = @aid), 
+        SELECT ROUND(avg(max_score) * 1.1) INTO @max_score FROM Problems WHERE aid = @aid;
+    ELSE 
+        SELECT ROUND(avg(max_score)) INTO @max_score FROM Problems;
+
+
+    INSERT INTO Problem(pid, pname, max_score, aid) VALUES (@pid, @pname, @max_score, @aid);
+END 
+
+/* Option 2 */
+CREATE PROCEDURE Give_Author_Raise
+    @aid Int
+AS
+BEGIN
+    UPDATE Author SET compensation = compensation * (1 + raise)
+    FROM Author
+       LEFT JOIN
+         (
+           SELECT Author.aid, num_problems,
+                  CASE
+                    WHEN problem_count_rank = 1 THEN 0.20
+                    WHEN problem_count_rank = 2 THEN 0.15
+                    WHEN problem_count_rank = 3 THEN 0.10
+                    ELSE 0.05
+                  END AS raise
+           FROM
+                (
+                SELECT aid, COUNT(pid) AS num_problems, RANK() OVER (ORDER BY COUNT(pid) DESC) AS problem_count_rank
+                FROM Problem
+                GROUP BY aid
+                ) AS problem_count_ranks
+                LEFT JOIN Author
+                ON Author.aid = problem_count_ranks.aid
+           ) AS raises
+         ON (Author.aid = raises.aid)
+        WHERE Author.aid = @aid
+END
+
+-- EXEC Give_Author_Raise @aid = 103;
