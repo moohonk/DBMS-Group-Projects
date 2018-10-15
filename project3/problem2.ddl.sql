@@ -127,3 +127,22 @@ INSERT INTO Student VALUES ('stefan',      'Stefan Keller',     'University of O
                            ('mightybruce', 'Bruce Yamashita',   'Texas A&M University',       2018),
                            ('_ash_',       'Ashley Brzozowicz', 'University of Oklahoma',     2020),
                            ('jose1980',    'Jose Monteiro',     'Texas Christian University', 2018);
+
+/** Problem 1 **/
+
+CREATE INDEX Problem_aid_index
+ON Problem(aid);
+
+/* Problem 2.5 */
+SELECT pname
+FROM Problem
+WHERE max_score=(SELECT MAX(max_score) FROM Problem) 
+AND 
+Problem.aid=(SELECT Author.aid FROM Author WHERE Author.aname='Rachel Moran');
+
+/* Problem 2.7 */
+SELECT cname, SUM(compensation)
+FROM Contest_Problems 
+LEFT JOIN Problem ON Contest_Problems.pid = Problem.pid
+LEFT JOIN Author ON Problem.aid = Author.aid
+GROUP BY cname;
